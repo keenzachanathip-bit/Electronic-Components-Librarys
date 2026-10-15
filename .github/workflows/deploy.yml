@@ -25,11 +25,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test
+      - run: cp .env.example .env.production
       - run: npm run build
         env:
           GITHUB_PAGES: "true"
-          VITE_TEACHABLE_MACHINE_MODEL_URL: https://teachablemachine.withgoogle.com/models/mZNDylZHP/
-          VITE_ENABLE_MOCK_MODEL: "false"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

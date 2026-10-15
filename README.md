@@ -4,6 +4,8 @@
 
 เปิดเว็บ: https://keenzachanathip-bit.github.io/Electronic-Components-Librarys/
 
+เว็บสาธารณะบน GitHub Pages ใช้ลิงก์โมเดลจาก `.env.example` หากเปลี่ยนโมเดล ให้แก้ `VITE_TEACHABLE_MACHINE_MODEL_URL` ในไฟล์นี้แล้ว push ไปที่ `main` เพื่อ deploy ใหม่ ส่วนการทดลองบนเครื่องใช้ `.env.local`
+
 ## เริ่มใช้งาน
 
 ```powershell
