@@ -85,7 +85,7 @@ const diagrams = {
     dots: [[101, 177]],
     annotations: [{ x: 210, y: 165, text: "จุดอ่านที่ C" }],
   },
-  Switch: series(["VCC", "Switch", "โหลด", "GND"], "ตัวอย่างสวิตช์ต่ออนุกรมเพื่อเปิดหรือปิดโหลด"),
+  Switch: series(["+5 V", "Button NO", "โหลด", "GND"], "ตัวอย่างปุ่มกด Normally Open: กดแล้ววงจรปิด ปล่อยแล้ววงจรเปิด"),
   Photoresistor: divider("LDR", "LDR กับตัวต้านทานค่าคงที่เป็นวงจรแบ่งแรงดันเข้า ADC"),
   "7-Segment": series(["GPIO", "R จำกัดกระแส", "Segment a", "ขาร่วม → GND"], "ตัวอย่างหนึ่ง segment สำหรับจอชนิด common cathode", 2),
   Potentiometer: {

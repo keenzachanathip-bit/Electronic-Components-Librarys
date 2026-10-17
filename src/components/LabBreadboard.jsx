@@ -47,7 +47,7 @@ function SwitchBody({ from, to }) {
     <circle cx={left + 10} cy="171" r="3" fill="#e2e8f0" />
     <circle cx={right - 10} cy="171" r="3" fill="#e2e8f0" />
     <path d={`M${left + 10} 168L${right - 17} 159`} stroke="#f8fafc" strokeWidth="2" />
-    <text x={(left + right) / 2} y="146" textAnchor="middle" fill="#a5f3fc" fontSize="12" fontWeight="bold">NO switch</text>
+    <text x={(left + right) / 2} y="146" textAnchor="middle" fill="#a5f3fc" fontSize="12" fontWeight="bold">NO button</text>
   </g>;
 }
 
@@ -103,7 +103,7 @@ function TransistorPlacement() {
 
 const placements = { Switch: SwitchPlacement, Diode: DiodePlacement, Transistor: TransistorPlacement };
 const descriptions = {
-  Switch: "breadboard ตัวอย่าง: ไฟบวกต่อ A2, สวิตช์สองขาระหว่าง E2 กับ E3, ตัวต้านทาน 330 โอห์มระหว่าง A3 กับ A4, LED ขา A ที่ E4 ขา K ที่ F4, J4 ลง GND",
+  Switch: "breadboard ตัวอย่าง: ไฟบวกต่อ A2, หน้าสัมผัสสองขาของปุ่มกด NO ระหว่าง E2 กับ E3, ตัวต้านทาน 330 โอห์มระหว่าง A3 กับ A4, LED ขา A ที่ E4 ขา K ที่ F4, J4 ลง GND; ปุ่ม 4 ขาต้องตรวจคู่ขาจริงก่อนเสียบ",
   Diode: "breadboard ตัวอย่าง: ไฟบวกต่อ A2, ไดโอด 1N4007 ขา A ที่ C2 ขา K ที่ C3, ตัวต้านทาน 330 โอห์ม A3 ถึง A4, LED E4 ถึง F4, J4 ลง GND",
   Transistor: "breadboard ตัวอย่างหลังตรวจผังขา: R 330 โอห์มระหว่าง C2 กับ C3, LED ขา A ที่ E3 ขา K ที่ F3, J3 ต่อ A7 ซึ่งเป็นขา C ของ 2N3904; ขา E ที่ A5 ต่อ GND, ขา B ที่ A6 ต่อ R 100 กิโลโอห์มลง GND; ไฟบวกผ่านสวิตช์ E9 ถึง E8 และ R 4.7 กิโลโอห์มระหว่าง C8 กับ C6 ไปขา B",
 };

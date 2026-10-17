@@ -7,7 +7,7 @@ const baseParts = [
   { name: "Transistor", category: "สารกึ่งตัวนำ", symbol: "Q", description: "ขยายสัญญาณหรือทำหน้าที่เป็นสวิตช์", usage: "ใช้สัญญาณขนาดเล็กควบคุมโหลดหรือขยายสัญญาณ ตรวจตำแหน่งขาจาก datasheet ของรุ่นนั้นก่อนต่อ" },
   { name: "LED", category: "แสงและจอแสดงผล", symbol: "LED", description: "เปล่งแสงเพื่อแสดงสถานะ", usage: "ต่อให้ถูกขั้วและใช้ตัวต้านทานจำกัดกระแสเมื่อจ่ายไฟให้ LED" },
   { name: "IR LED / Photo transistor (รวม)", category: "แสงและจอแสดงผล", symbol: "IR", description: "ส่งและรับแสงอินฟราเรด", usage: "ใช้เป็นคู่ส่ง–รับในวงจรตรวจจับวัตถุ ระยะใกล้ หรือการตัดลำแสง" },
-  { name: "Switch", category: "สวิตช์และเสียง", symbol: "SW", description: "เปิดหรือปิดวงจรไฟฟ้า", usage: "ต่อในทางเดินสัญญาณหรือไฟเลี้ยงเพื่อเลือกสถานะเปิด–ปิดของวงจร" },
+  { name: "Switch", displayName: "Button Switch", category: "สวิตช์และเสียง", symbol: "SW", description: "ปุ่มกดชั่วขณะ: กดแล้ววงจรต่อถึงกัน ปล่อยแล้ววงจรตัด (แบบ Normally Open)", usage: "ใช้เป็นปุ่มสั่งงานหรือเปิด LED ชั่วคราว; เมื่อต่อเข้าขาดิจิทัลให้ใช้ตัวต้านทาน pull-up/pull-down หรือ INPUT_PULLUP" },
   { name: "Photoresistor", category: "เซนเซอร์", symbol: "LDR", description: "เปลี่ยนความต้านทานตามแสง", usage: "ใช้ร่วมกับตัวต้านทานอีกตัวเป็นวงจรแบ่งแรงดันสำหรับตรวจระดับแสง" },
   { name: "7-Segment", category: "แสงและจอแสดงผล", symbol: "7", description: "แสดงตัวเลขด้วย LED เจ็ดส่วน", usage: "ขับแต่ละส่วนผ่านตัวต้านทานจำกัดกระแส และตรวจว่ารุ่นที่ใช้เป็นขั้วร่วมบวกหรือขั้วร่วมลบ" },
   { name: "Potentiometer", category: "ตัวต้านทาน", symbol: "POT", description: "ปรับค่าความต้านทานได้", usage: "หมุนปรับแรงดันอ้างอิงหรือระดับสัญญาณ โดยใช้ขากลางเป็นขาเลื่อน" },
@@ -73,10 +73,10 @@ const partDetails = {
     sourceUrl: "https://learn.adafruit.com/ir-breakbeam-sensors?view=all",
   },
   Switch: {
-    identify: "เป็นปุ่มกดหรือคันโยก มีสองขาหรือหลายขา ใช้มิเตอร์โหมดความต่อเนื่องเช็กว่าคู่ขาใดเชื่อมกันเมื่อกด",
-    pinGuide: "สวิตช์กลไกทั่วไปไม่มีขา GND ประจำตัว ใช้มิเตอร์โหมดความต่อเนื่องหาคู่ขาที่ต่อถึงกันเมื่อกด; ขาใดไป GND ขึ้นกับวงจรที่เลือกใช้",
-    connection: "ต่ออนุกรมในวงจรไฟแรงดันต่ำเพื่อเปิดปิด หรือใช้เป็นอินพุตดิจิทัลร่วมกับตัวต้านทาน pull-up/pull-down",
-    example: "ปุ่มเริ่มหรือหยุดการทำงานของวงจร",
+    identify: "ปุ่มกดแบบ 2 หรือ 4 ขา (tactile switch) มักเด้งกลับเมื่อปล่อย แบบ 4 ขามีสองคู่ที่ต่อถึงกันอยู่แล้ว ใช้มิเตอร์โหมดความต่อเนื่องหาสองขาที่ไม่ต่อกันตอนปล่อย แต่ต่อกันเมื่อกด; ตรวจผังขาของรุ่นจริง",
+    pinGuide: "ปุ่มกดไม่มีขา GND ประจำตัว หากใช้กับขาดิจิทัลแบบ INPUT_PULLUP ให้เลือกหน้าสัมผัสที่ต่อกันเฉพาะเมื่อกด ขาหนึ่งไป GND อีกขาไปอินพุต: ปล่อยอ่าน HIGH กดอ่าน LOW; ปุ่ม 4 ขาต้องแยกคู่ขาที่ต่อถึงกันตลอดก่อน",
+    connection: "ตัวอย่างให้ LED ติดเฉพาะตอนกด: +5 V → ปุ่มกด NO → ตัวต้านทาน 330 Ω → LED ขา A ไป K → GND; ถ้าใช้เป็นอินพุตไมโครคอนโทรลเลอร์ ให้ต่อปุ่มระหว่างอินพุตแบบ INPUT_PULLUP กับ GND",
+    example: "ปุ่มเริ่มการทำงานหรือปุ่มกดให้ไฟ LED ติดชั่วคราว",
     sourceUrl: "https://learn.sparkfun.com/tutorials/button-and-switch-basics/all",
   },
   Photoresistor: {
@@ -134,6 +134,7 @@ const phototransistorPart = {
 
 const modelNameAliases = {
   "c electrolyte": "C Electrolytic",
+  "button switch": "Switch",
   ldr: "Photoresistor",
   "7segment": "7-Segment",
   phototransistor: "Phototransistor",
@@ -149,7 +150,7 @@ export function catalogFromClassLabels(classLabels) {
     const canonicalName = modelNameAliases[normalizeName(name)] || name;
     const knownPart = [...parts, phototransistorPart].find((part) => normalizeName(part.name) === normalizeName(canonicalName));
     return knownPart
-      ? { ...knownPart, name, displayName: knownPart.name }
+      ? { ...knownPart, name, displayName: knownPart.displayName || knownPart.name }
       : { name, displayName: name, category: "อื่น ๆ", symbol: name.slice(0, 3).toUpperCase(), description: "คลาสจากโมเดลภาพที่เชื่อมต่อ", usage: "ยังไม่มีรายละเอียดของชิ้นส่วนนี้ในคลังข้อมูล" };
   });
 }
