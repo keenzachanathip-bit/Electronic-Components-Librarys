@@ -10,5 +10,5 @@ export function needsClassConfirmation(predictions, isMock = false) {
 export function shouldRetryImage(predictions, isMock = false) {
   if (isMock || !predictions?.length) return false;
   const topScore = predictions[0]?.probability;
-  return Number.isFinite(topScore) && topScore <= 0.7;
+  return !Number.isFinite(topScore) || topScore < 0.7;
 }

@@ -5,7 +5,7 @@ import RemoveImageButton from "./RemoveImageButton.jsx";
 import ClassificationReview from "./ClassificationReview.jsx";
 import StarterCircuit from "./StarterCircuit.jsx";
 import LowConfidenceWarning from "./LowConfidenceWarning.jsx";
-import { needsClassConfirmation } from "../utils/classification.js";
+import { needsClassConfirmation, shouldRetryImage } from "../utils/classification.js";
 
 const supportedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
@@ -15,6 +15,7 @@ export default function UploadDialog({ imageUrl, onUpload, onRemove, onClose, pr
   const [fileError, setFileError] = useState("");
   const [animationDone, setAnimationDone] = useState(false);
   const topPrediction = predictions[0];
+  const retryImage = shouldRetryImage(predictions, isMock);
   const predictedPart = catalogParts.find((part) => part.name === topPrediction?.className);
   const needsConfirmation = needsClassConfirmation(predictions, isMock);
   const guidePart = confirmedClass ? catalogParts.find((part) => part.name === confirmedClass) : needsConfirmation ? null : predictedPart;
@@ -153,16 +154,15 @@ export default function UploadDialog({ imageUrl, onUpload, onRemove, onClose, pr
 
             <section className="rounded-2xl border border-white/8 bg-[#101827] p-5 sm:p-6" aria-live="polite">
               <p className="text-xs font-semibold tracking-[0.17em] text-violet-300">02 / CLASS RESULT</p>
-              <h3 className="mt-1 text-lg font-semibold text-white">{isMock ? "คลาสตัวอย่าง" : "ชิ้นส่วนที่พบ"}</h3>
+              <h3 className="mt-1 text-lg font-semibold text-white">{isMock ? "คลาสตัวอย่าง" : retryImage ? "ยังไม่ระบุชิ้นส่วน" : "ชิ้นส่วนที่พบ"}</h3>
               {topPrediction ? (
-                <div className="mt-6 space-y-5">
+                retryImage ? <LowConfidenceWarning predictions={predictions} isMock={isMock} className="mt-6" /> : <div className="mt-6 space-y-5">
                   <div className="rounded-xl border border-cyan-300/20 bg-cyan-300/7 p-5">
                     <p className="text-xs font-semibold tracking-wide text-cyan-300">{confirmedClass ? "ผลที่โมเดลเสนอ" : "CLASS"}</p>
                     <h4 className="mt-2 break-words text-2xl font-bold text-white sm:text-3xl">{predictedPart?.displayName || topPrediction.className}</h4>
                     {predictedPart?.displayName && predictedPart.displayName !== topPrediction.className && <p className="mt-1 text-xs text-slate-500">คลาสโมเดล: {topPrediction.className}</p>}
                     <p className="mt-3 text-sm text-slate-400">{isMock ? "คะแนนสมมติ" : "คะแนนคลาสนี้จากโมเดล"} <strong className="text-cyan-300">{(topPrediction.probability * 100).toFixed(1)}%</strong></p>
                   </div>
-                  <LowConfidenceWarning predictions={predictions} isMock={isMock} />
                   <div className="rounded-xl border border-white/8 bg-[#0b1322] p-5">
                     <p className="text-xs font-semibold tracking-wide text-slate-500">หน้าที่โดยย่อ · {displayPart?.displayName || displayPart?.name || topPrediction.className}{needsConfirmation && !confirmedClass ? " (ผลเบื้องต้น)" : ""}</p>
                     <p className="mt-2 text-base leading-7 text-slate-200">{displayPart?.description || "ยังไม่มีข้อมูลหน้าที่ของคลาสนี้ในคลังชิ้นส่วน"}</p>
