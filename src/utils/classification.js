@@ -6,3 +6,9 @@ export function needsClassConfirmation(predictions, isMock = false) {
   if (!Number.isFinite(first) || !Number.isFinite(second)) return true;
   return first < 0.75 || first - second < 0.15;
 }
+
+export function shouldRetryImage(predictions, isMock = false) {
+  if (isMock || !predictions?.length) return false;
+  const topScore = predictions[0]?.probability;
+  return Number.isFinite(topScore) && topScore <= 0.7;
+}

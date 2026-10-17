@@ -1,6 +1,7 @@
 import ConnectionGuide from "./ConnectionGuide.jsx";
 import ClassificationReview from "./ClassificationReview.jsx";
 import StarterCircuit from "./StarterCircuit.jsx";
+import LowConfidenceWarning from "./LowConfidenceWarning.jsx";
 import { needsClassConfirmation } from "../utils/classification.js";
 
 export default function PredictionResult({ predictions, imageUrl, predicting, modelReady, modelLoading, modelError, predictionError, catalogParts, isMock = false, confirmedClass, onConfirmClass }) {
@@ -32,6 +33,7 @@ export default function PredictionResult({ predictions, imageUrl, predicting, mo
               <strong className="text-3xl font-bold text-cyan-300" aria-label={`คะแนนคลาสจากโมเดล ${(topPrediction.probability * 100).toFixed(1)} เปอร์เซ็นต์`}>{(topPrediction.probability * 100).toFixed(1)}%</strong>
             </div>
           </div>
+          <LowConfidenceWarning predictions={predictions} isMock={isMock} className="mt-4" />
           <div className="mt-5"><ClassificationReview predictions={predictions} catalogParts={catalogParts} confirmedClass={confirmedClass} onConfirm={onConfirmClass} isMock={isMock} /></div>
           {guidePart && <div className="mt-5"><ConnectionGuide part={guidePart} /><div className="mt-5"><StarterCircuit part={guidePart} /></div></div>}
           <div className="mt-6"><p className="mb-4 text-sm font-semibold text-slate-300">{isMock ? "คะแนนตัวอย่างของคลาส" : "ความเป็นไปได้ทั้งหมด"}</p><div className="space-y-4">

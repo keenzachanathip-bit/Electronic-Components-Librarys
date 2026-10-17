@@ -4,6 +4,7 @@ import ConnectionGuide from "./ConnectionGuide.jsx";
 import RemoveImageButton from "./RemoveImageButton.jsx";
 import ClassificationReview from "./ClassificationReview.jsx";
 import StarterCircuit from "./StarterCircuit.jsx";
+import LowConfidenceWarning from "./LowConfidenceWarning.jsx";
 import { needsClassConfirmation } from "../utils/classification.js";
 
 const supportedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -161,6 +162,7 @@ export default function UploadDialog({ imageUrl, onUpload, onRemove, onClose, pr
                     {predictedPart?.displayName && predictedPart.displayName !== topPrediction.className && <p className="mt-1 text-xs text-slate-500">คลาสโมเดล: {topPrediction.className}</p>}
                     <p className="mt-3 text-sm text-slate-400">{isMock ? "คะแนนสมมติ" : "คะแนนคลาสนี้จากโมเดล"} <strong className="text-cyan-300">{(topPrediction.probability * 100).toFixed(1)}%</strong></p>
                   </div>
+                  <LowConfidenceWarning predictions={predictions} isMock={isMock} />
                   <div className="rounded-xl border border-white/8 bg-[#0b1322] p-5">
                     <p className="text-xs font-semibold tracking-wide text-slate-500">หน้าที่โดยย่อ · {displayPart?.displayName || displayPart?.name || topPrediction.className}{needsConfirmation && !confirmedClass ? " (ผลเบื้องต้น)" : ""}</p>
                     <p className="mt-2 text-base leading-7 text-slate-200">{displayPart?.description || "ยังไม่มีข้อมูลหน้าที่ของคลาสนี้ในคลังชิ้นส่วน"}</p>
