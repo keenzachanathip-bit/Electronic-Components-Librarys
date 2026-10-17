@@ -112,7 +112,7 @@ export default function UploadDialog({ imageUrl, onUpload, onRemove, onClose, pr
               {modelLoading && modelProgress !== null && <p className="mt-3 text-sm font-semibold text-cyan-300">โหลดโมเดล {modelProgress}%</p>}
             </section>
           ) : (
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]">
+          <div className="flex flex-col gap-5">
             <section className="rounded-2xl border border-white/8 bg-[#101827] p-4 sm:p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div><p className="text-xs font-semibold tracking-[0.17em] text-cyan-300">01 / IMAGE</p><h3 className="mt-1 text-lg font-semibold text-white">รูปที่อัปโหลด</h3></div>
@@ -130,7 +130,7 @@ export default function UploadDialog({ imageUrl, onUpload, onRemove, onClose, pr
                 }}
               />
               <div
-                className="relative flex min-h-[240px] items-center justify-center rounded-xl border border-white/8 bg-[#080e19] p-4 sm:min-h-[360px] lg:min-h-[550px]"
+                className="relative flex min-h-[220px] items-center justify-center rounded-xl border border-white/8 bg-[#080e19] p-4 sm:min-h-[300px] lg:min-h-[360px]"
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
                   event.preventDefault();
@@ -139,7 +139,7 @@ export default function UploadDialog({ imageUrl, onUpload, onRemove, onClose, pr
               >
                 <RemoveImageButton onClick={onRemove} className="absolute right-3 top-3 z-10" />
                 {imageUrl ? (
-                  <img src={imageUrl} alt="รูปชิ้นส่วนที่อัปโหลด" className="max-h-[38vh] max-w-full rounded-lg object-contain sm:max-h-[65vh]" />
+                  <img src={imageUrl} alt="รูปชิ้นส่วนที่อัปโหลด" className="max-h-[34vh] max-w-full rounded-lg object-contain sm:max-h-[42vh]" />
                 ) : (
                   <div className="text-center">
                     <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/8 text-4xl text-cyan-300">＋</div>
