@@ -4,11 +4,13 @@ import Prediction from "./components/Prediction.jsx";
 import UploadDialog from "./components/UploadDialog.jsx";
 import PartDetailDialog from "./components/PartDetailDialog.jsx";
 import ResistorCalculator from "./components/ResistorCalculator.jsx";
+import ToolsPage from "./pages/ToolsPage.jsx";
 import { catalogFromClassLabels, instruments, parts } from "./data/catalog.js";
 import { createMockPredictions } from "./services/MockModelService.js";
 
 const modelUrl = import.meta.env.VITE_TEACHABLE_MACHINE_MODEL_URL?.trim() || "";
 const mockMode = import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCK_MODEL === "true" && !modelUrl;
+const pageFromHash = (hash) => ["#/tools", "#tools"].includes(hash) ? "tools" : "components";
 let modelServicePromise;
 const getModelService = () => modelServicePromise ||= import("./services/ModelService.js").catch((error) => {
   modelServicePromise = null;
@@ -16,6 +18,7 @@ const getModelService = () => modelServicePromise ||= import("./services/ModelSe
 });
 
 export default function App() {
+  const [page, setPage] = useState(() => pageFromHash(window.location.hash));
   const [model, setModel] = useState(null);
   const [modelLoading, setModelLoading] = useState(false);
   const [modelProgress, setModelProgress] = useState(null);
@@ -33,6 +36,27 @@ export default function App() {
   const [partCategory, setPartCategory] = useState("ทั้งหมด");
   const closeUpload = useCallback(() => setUploadOpen(false), []);
   const closePartDetail = useCallback(() => setSelectedPart(null), []);
+
+  useEffect(() => {
+    function handleHashChange() {
+      setPage(pageFromHash(window.location.hash));
+      setUploadOpen(false);
+      setSelectedPart(null);
+    }
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    document.title = page === "tools" ? "เครื่องมือวัด | CircuitLib" : "CircuitLib · Electronic Components Library";
+    const target = window.location.hash.slice(1);
+    if (page === "tools" || target === "/components" || !target) {
+      window.scrollTo(0, 0);
+    } else {
+      const frame = requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView());
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [page]);
 
   useEffect(() => {
     if (!uploadOpen || !modelUrl || model || modelLoadPromise.current) return;
@@ -138,22 +162,23 @@ export default function App() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[620px] bg-[radial-gradient(ellipse_at_50%_0%,rgba(13,148,136,0.18),transparent_62%)]" />
 
       <header className="relative z-10 border-b border-white/7 bg-[#080c17]/85 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
-          <a href="#top" className="flex items-center gap-3 text-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-5">
+          <a href="#/components" className="flex items-center gap-3 text-white">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/25 bg-cyan-300/10 text-cyan-300 shadow-[0_0_28px_rgba(34,211,238,0.12)]">
               <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true"><path d="M4 12h4l2-5 4 10 2-5h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/><circle cx="3" cy="12" r="1.5" fill="currentColor"/><circle cx="21" cy="12" r="1.5" fill="currentColor"/></svg>
             </span>
             <span className="text-sm font-bold tracking-[0.1em] sm:text-base">CIRCUIT<span className="text-cyan-300">LIB</span></span>
           </a>
-          <nav className="flex items-center gap-5 text-xs font-medium text-slate-400 sm:gap-8 sm:text-sm" aria-label="เมนูหลัก">
+          <nav className="flex w-full items-center justify-between gap-2 text-xs font-medium text-slate-400 sm:w-auto sm:justify-start sm:gap-8 sm:text-sm" aria-label="เมนูหลัก">
             <a href="#analyze" className="transition hover:text-cyan-300">วิเคราะห์ภาพ</a>
-            <a href="#parts" className="transition hover:text-cyan-300">ชิ้นส่วน</a>
-            <a href="#tools" className="transition hover:text-cyan-300">เครื่องมือวัด</a>
+            <a href="#parts" aria-current={page === "components" ? "page" : undefined} className={`transition hover:text-cyan-300 ${page === "components" ? "text-cyan-300" : ""}`}>ชิ้นส่วน</a>
+            <a href="#/tools" aria-current={page === "tools" ? "page" : undefined} className={`transition hover:text-violet-300 ${page === "tools" ? "text-violet-300" : ""}`}>เครื่องมือวัด</a>
           </nav>
         </div>
       </header>
 
       <main id="top" className="relative z-10 mx-auto max-w-7xl px-5 pb-20 sm:px-8">
+        {page === "tools" ? <ToolsPage /> : <>
         <section className="grid items-center gap-10 py-16 lg:grid-cols-[1.35fr_0.65fr] lg:py-24">
           <div>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/15 bg-cyan-300/7 px-4 py-2 text-xs font-semibold tracking-[0.2em] text-cyan-300">
@@ -246,36 +271,7 @@ export default function App() {
           </div>}
         </section>
 
-        <section id="tools" className="scroll-mt-28 pt-24">
-          <div className="mb-7"><p className="text-xs font-semibold tracking-[0.2em] text-violet-300">MEASUREMENT TOOLS</p><h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">เครื่องมือวัดและหน้าที่</h2><p className="mt-3 text-sm text-slate-400">ดูข้อมูลได้ทันที ไม่ต้องอัปโหลดรูปเครื่องมือวัด</p></div>
-          <div className="grid gap-5 md:grid-cols-2">
-            {instruments.map((instrument) => (
-              <article key={instrument.id} className="overflow-hidden rounded-2xl border border-white/8 bg-[#101827]">
-                <div className="relative h-64 overflow-hidden border-b border-white/7 bg-[#dce3e9]">
-                  <img src={instrument.photo} alt={`ภาพถ่าย ${instrument.name}`} loading="lazy" className="h-full w-full object-contain" />
-                  <span className="absolute left-4 top-4 rounded-full bg-slate-950/80 px-3 py-1 text-xs font-medium text-white">ภาพถ่ายจริง</span>
-                </div>
-                <div className="p-6">
-                  <p className="text-xs font-semibold tracking-[0.15em] text-violet-300">{instrument.category}</p>
-                  <h3 className="mt-2 text-xl font-semibold text-white">{instrument.name}</h3>
-                  <p className="mt-3 min-h-12 text-sm leading-6 text-slate-400">{instrument.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">{instrument.tags.map((tag) => <span key={tag} className="rounded-md border border-white/8 bg-white/4 px-2.5 py-1 text-xs text-slate-400">{tag}</span>)}</div>
-                  <div className="mt-6 border-t border-white/8 pt-5">
-                    <h4 className="text-sm font-semibold text-white">วิธีใช้งานเบื้องต้น</h4>
-                    <ol className="mt-3 space-y-3">
-                      {instrument.steps.map((step, index) => (
-                        <li key={step} className="flex gap-3 text-sm leading-6 text-slate-400"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-300/10 text-xs font-bold text-violet-300">{index + 1}</span><span>{step}</span></li>
-                      ))}
-                    </ol>
-                    <a href={instrument.guideUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-xs font-medium text-violet-300 hover:text-violet-200">อ่านคู่มือพื้นฐาน ↗</a>
-                  </div>
-                  <p className="mt-5 border-t border-white/8 pt-4 text-xs leading-5 text-slate-500">ภาพ: <a href={instrument.photoSource} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300">{instrument.photoAuthor}</a> · <a href={instrument.photoLicenseUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300">{instrument.photoLicense}</a> · ภาพย่อจาก Wikimedia Commons</p>
-                </div>
-              </article>
-            ))}
-          </div>
-          <p className="mt-5 rounded-xl border border-amber-300/15 bg-amber-300/5 px-5 py-4 text-sm leading-6 text-amber-100/80">คำแนะนำนี้สำหรับการทดลองกับวงจรแรงดันต่ำ ควรอ่านคู่มือของเครื่องรุ่นที่ใช้งานก่อนต่อเข้ากับวงจรจริง</p>
-        </section>
+        </>}
       </main>
 
       {uploadOpen && (
